@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        form { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; }
+        input { padding: 8px; font-size: 14px; }
+        button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; font-size: 14px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Users</h1>
+
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Username</th><th>Email</th><th>Created At</th></tr>
+        </thead>
+        <tbody id="users-table"></tbody>
+    </table>
+
+    <h2>Add User</h2>
+    <form id="user-form">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Create User</button>
+    </form>
+
+    <script>
+        async function loadUsers() {
+            const res = await fetch('/users');
+            const users = await res.json();
+            const tbody = document.getElementById('users-table');
+            tbody.innerHTML = users.map(u =>
+                `<tr><td>${u.id}</td><td>${u.username}</td><td>${u.email}</td><td>${u.created_at}</td></tr>`
+            ).join('');
+        }
+
+        document.getElementById('user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await fetch('/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('username').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value
+                })
+            });
+            e.target.reset();
+            loadUsers();
+        });
+
+        loadUsers();
+    </script>
+</body>
+</html>

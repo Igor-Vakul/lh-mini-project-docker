@@ -1,0 +1,24 @@
+---
+  - hosts: webservers
+    tasks:
+      - name: Clone repository
+        git:
+          repo: https://github.com/Igor-Vakul/lh-mini-project-docker.git
+          dest: /home/ansible/project
+          force: yes
+      - name: Deploy Ansible Slave-1(Application) using Docker Compose
+        shell: docker compose up -d
+        args:
+          chdir: /home/ansible/project/app
+
+  - hosts: dbservers
+    tasks:
+      - name: Clone repository
+        git:
+          repo: https://github.com/Igor-Vakul/lh-mini-project-docker.git
+          dest: /home/ansible/project
+          force: yes
+      - name: Deploy Ansible Slave-2(Database) using Docker Compose
+        shell: docker compose up -d
+        args:
+          chdir: /home/ansible/project/database

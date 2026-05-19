@@ -1,0 +1,37 @@
+services:
+  ansible-master:    
+    image: igorvakul/ansible-master:latest
+    container_name: ansible-master
+    restart: always
+    volumes:      
+      - shared_keys:/shared
+      - ./:/ansible-project
+    networks:
+      - ansible-network
+
+  ansible-slave-1:
+    image: igorvakul/ansible-slave:latest
+    container_name: ansible-slave-1
+    restart: always
+    volumes:
+      - shared_keys:/shared
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - ansible-network
+      
+  ansible-slave-2:
+    image: igorvakul/ansible-slave:latest
+    container_name: ansible-slave-2
+    restart: always
+    volumes:
+      - shared_keys:/shared
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - ansible-network
+
+volumes:
+  shared_keys:
+
+networks :
+  ansible-network:
+    driver: bridge
