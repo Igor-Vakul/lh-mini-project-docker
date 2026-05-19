@@ -27,6 +27,8 @@ RUN mkdir -p /home/ansible/.ssh && \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+RUN usermod -aG docker ansible
+
 # Expose SSH port
 EXPOSE 22
 
