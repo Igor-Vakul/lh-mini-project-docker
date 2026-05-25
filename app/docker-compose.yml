@@ -1,6 +1,6 @@
 services:
   ansible-python-app:
-    build: .    
+    build: .
     image: ansible_py-postgres:v0.1
     container_name: ansible-python-app
     networks:
@@ -14,6 +14,5 @@ services:
       - DB_NAME=mydb
 
 networks:
-    my-network:      
-      external : true
-
+  my-network:
+    external: true

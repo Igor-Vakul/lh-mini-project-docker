@@ -30,6 +30,6 @@ volumes:
   postgres_data:
 
 networks:
-    my-network:
-      name: my-network
-      driver: bridge
+  my-network:
+    name: my-network
+    driver: bridge

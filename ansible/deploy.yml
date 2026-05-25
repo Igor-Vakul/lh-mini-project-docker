@@ -1,4 +1,34 @@
 ---
+  - name: Configure UFW
+    hosts: all
+    become: true
+    tasks:
+      - name: Install UFW package
+        ansible.builtin.package:
+          name: ufw
+          state: present
+
+      - name: Deny incoming connections by default
+        community.general.ufw:
+          direction: incoming
+          policy: deny
+
+      - name: Allow outgoing connections by default
+        community.general.ufw:
+          direction: outgoing
+          policy: allow
+
+      - name: Allow SSH port
+        community.general.ufw:
+          rule: allow
+          port: '22'
+          proto: tcp
+
+      - name: Enable UFW
+        community.general.ufw:
+          state: enabled
+
+
   - hosts: webservers
     tasks:
       - name: Clone repository
@@ -11,6 +41,13 @@
         args:
           chdir: /home/ansible/project/app
 
+      - name: Allow port 5000
+        community.general.ufw:
+          rule: allow
+          port: '5000'
+          proto: tcp
+    become: true
+
   - hosts: dbservers
     tasks:
       - name: Clone repository
@@ -22,3 +59,11 @@
         shell: docker compose up -d
         args:
           chdir: /home/ansible/project/database
+
+      - name: Allow port 5432 only from slave-1
+        community.general.ufw:
+          rule: allow
+          port: '5432'
+          proto: tcp
+          src: 172.28.0.10
+    become: true

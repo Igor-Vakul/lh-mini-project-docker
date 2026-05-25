@@ -1,37 +1,49 @@
 services:
-  ansible-master:    
+  ansible-master:
     image: igorvakul/ansible-master:latest
     container_name: ansible-master
     restart: always
-    volumes:      
+    volumes:
       - shared_keys:/shared
       - ./:/ansible-project
     networks:
-      - ansible-network
+      ansible-network:
+        ipv4_address: 172.28.0.2
 
   ansible-slave-1:
     image: igorvakul/ansible-slave:latest
     container_name: ansible-slave-1
     restart: always
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     volumes:
       - shared_keys:/shared
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - ansible-network
-      
+      ansible-network:
+        ipv4_address: 172.28.0.10
+
   ansible-slave-2:
     image: igorvakul/ansible-slave:latest
     container_name: ansible-slave-2
     restart: always
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     volumes:
       - shared_keys:/shared
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - ansible-network
+      ansible-network:
+        ipv4_address: 172.28.0.11
 
 volumes:
   shared_keys:
 
-networks :
+networks:
   ansible-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
