@@ -9,10 +9,16 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1
       POSTGRES_DB: mydb
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "mydb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data   
 
   pgadmin:
     image: dpage/pgadmin4:latest
