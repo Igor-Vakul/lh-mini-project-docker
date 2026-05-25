@@ -32,4 +32,4 @@ volumes:
 networks:
     my-network:
       name: my-network
-      driver: bridge # Используется по умолчанию для связи контейнеров
+      driver: bridge
