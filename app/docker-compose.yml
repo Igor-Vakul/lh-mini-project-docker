@@ -8,10 +8,10 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DB_HOST=postgres-db
-      - DB_USER=root
-      - DB_PASSWORD=1
-      - DB_NAME=mydb
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/"]
       interval: 30s
