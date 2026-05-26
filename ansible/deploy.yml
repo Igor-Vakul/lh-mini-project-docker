@@ -30,12 +30,28 @@
 
 
   - hosts: webservers
+    become: true
+    vars:
+      db_host: postgres-db
+      db_user: root
+      db_password: "1"
+      db_name: mydb
     tasks:
       - name: Clone repository
         git:
           repo: https://github.com/Igor-Vakul/lh-mini-project-docker.git
           dest: /home/ansible/project
           force: yes
+
+      - name: Create .env file for app
+        ansible.builtin.copy:
+          dest: /home/ansible/project/app/.env
+          content: |
+            DB_HOST={{ db_host }}
+            DB_USER={{ db_user }}
+            DB_PASSWORD={{ db_password }}
+            DB_NAME={{ db_name }}
+
       - name: Deploy Ansible Slave-1(Application) using Docker Compose
         shell: docker compose up -d
         args:
@@ -46,15 +62,32 @@
           rule: allow
           port: '5000'
           proto: tcp
-    become: true
 
   - hosts: dbservers
+    become: true
+    vars:
+      postgres_user: root
+      postgres_password: "1"
+      postgres_db: mydb
+      pgadmin_email: admin@example.com
+      pgadmin_password: adminpassword
     tasks:
       - name: Clone repository
         git:
           repo: https://github.com/Igor-Vakul/lh-mini-project-docker.git
           dest: /home/ansible/project
           force: yes
+
+      - name: Create .env file for database
+        ansible.builtin.copy:
+          dest: /home/ansible/project/database/.env
+          content: |
+            POSTGRES_USER={{ postgres_user }}
+            POSTGRES_PASSWORD={{ postgres_password }}
+            POSTGRES_DB={{ postgres_db }}
+            PGADMIN_DEFAULT_EMAIL={{ pgadmin_email }}
+            PGADMIN_DEFAULT_PASSWORD={{ pgadmin_password }}
+
       - name: Deploy Ansible Slave-2(Database) using Docker Compose
         shell: docker compose up -d
         args:
@@ -66,4 +99,3 @@
           port: '5432'
           proto: tcp
           src: 172.28.0.10
-    become: true
