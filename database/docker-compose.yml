@@ -29,6 +29,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
     ports:
       - "5050:80"
+    networks:
+      - my-network
     depends_on:
       - db
 
